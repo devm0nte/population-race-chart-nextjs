@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TypeRegion {
+  Africa
+  Americas
+  Asia
+  Continent
+  Europe
+  Group
+  Oceania
+  World
+  Etc
+}
+
+model Population {
+  id                                         Int        @id @default(autoincrement())
+  country_name                               String     @db.VarChar(100)
+  region                                     TypeRegion @default(Etc)
+  flag                                       String?    @db.VarChar(500)
+  year                                       Int?
+  population                                 BigInt?
+  population_of_children_under_the_age_of_1  BigInt?
+  population_of_children_under_the_age_of_5  BigInt?
+  population_of_children_under_the_age_of_15 BigInt?
+  population_under_the_age_of_25             BigInt?
+  population_aged_15_to_64_years             BigInt?
+  population_older_than_15_years             BigInt?
+  population_older_than_18_years             BigInt?
+  population_at_age_1                        BigInt?
+  population_aged_1_to_4_years               BigInt?
+  population_aged_5_to_9_years               BigInt?
+  population_aged_10_to_14_years             BigInt?
+  population_aged_15_to_19_years             BigInt?
+  population_aged_20_to_29_years             BigInt?
+  population_aged_30_to_39_years             BigInt?
+  population_aged_40_to_49_years             BigInt?
+  population_aged_50_to_59_years             BigInt?
+  population_aged_60_to_69_years             BigInt?
+  population_aged_70_to_79_years             BigInt?
+  population_aged_80_to_89_years             BigInt?
+  population_aged_90_to_99_years             BigInt?
+  population_older_than_100_years            BigInt?
+
+  @@unique([country_name, year], map: "population_and_demography_country_name_idx")
+  @@map("population")
+}
