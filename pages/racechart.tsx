@@ -1,5 +1,6 @@
 import {BarChart} from "@/components/barchart";
 import {TimelineBar} from "@/components/timelinebar";
+import { population } from "@/data/population";
 import {ResponseData, getRandomColor} from "@/lib/api.utils";
 import React, {useEffect, useState} from "react";
 
@@ -9,15 +10,18 @@ const RaceChart = () => {
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>();
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
     useEffect(() => {
-        const getData = async () => {
-            const response = await fetch("/api/population/year", {
-                method: "GET",
-            });
-            return response.json();
-        };
-        getData().then((data: ResponseData) => {
-            setChartData(data.data);
-        });
+        // const getData = async () => {
+        //     const response = await fetch("/api/population/year", {
+        //         method: "GET",
+        //     });
+        //     return response.json();
+        // };
+        // getData().then((data: ResponseData) => {
+        //     setChartData(data.data);
+        // });
+
+        // USE CACHED DATA
+        setChartData(population); 
     }, []);
 
     useEffect(() => {
@@ -65,8 +69,6 @@ const RaceChart = () => {
                 //     borderWidth: 5,
                 // };
             );
-            // console.log(chartDataList)
-            console.log(year, chartDataList.length);
 
             return chartDataList;
         }

@@ -10,7 +10,6 @@ export const BarChart: React.FC<BarChartProps> = ({datalist}) => {
     const chartRef: any = useRef(null);
 
     useEffect(() => {
-        // console.log(datalist);
         if (chartRef.current) {
             if (chartRef.current.chart) {
                 const currentChart = chartRef.current.chart;
@@ -41,7 +40,6 @@ export const BarChart: React.FC<BarChartProps> = ({datalist}) => {
                 //     );
 
                 //     if (!countryExists) {
-                //     console.log("DEL INDEX", index, dataPoint);
 
                 //         currentData.splice(index, 1);
                 //     }
@@ -120,7 +118,7 @@ export const BarChart: React.FC<BarChartProps> = ({datalist}) => {
                                 },
                             },
                             y: {
-                                display: false,
+                                display: true,
                                 grid: {
                                     display: false,
                                 },
