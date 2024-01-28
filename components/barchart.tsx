@@ -14,9 +14,6 @@ export const BarChart: React.FC<BarChartProps> = ({datalist}) => {
             if (chartRef.current.chart) {
                 const currentChart = chartRef.current.chart;
                 currentChart.config.data.datasets[0].data = datalist;
-                currentChart.config.data.datasets[0].datalabels = {
-                    display: false,
-                };
                 // datalist.forEach((newData) => {
                 //     const existingDataIndex = currentData.findIndex(
                 //         (data: any) =>

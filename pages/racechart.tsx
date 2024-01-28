@@ -36,13 +36,14 @@ const RaceChart = () => {
             }, 500);
             setIntervalId(intervalID);
         };
-        if (isPlaying) {
+        if (isPlaying && chartData.length > 0) {
+            console.log(currentYear);
             addYearInterval();
         } else {
             clearInterval(intervalId);
         }
         return () => clearInterval(intervalId);
-    }, [isPlaying]);
+    }, [isPlaying,chartData]);
 
     const handlePlayBtn = () => {
         setIsPlaying((prevState) => {
