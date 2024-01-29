@@ -2,10 +2,10 @@ import {BarChart} from "@/components/barchart";
 import {RacingBarChart} from "@/components/barchart-d3";
 import LegendButton from "@/components/legendButton";
 import {TimelineBar} from "@/components/timelinebar";
-import {population} from "@/data/population";
 import {regionType} from "@/data/type";
 import {ResponseData, getRandomColor} from "@/lib/api.utils";
 import React, {useEffect, useState} from "react";
+import cacheFile from "@/data/cachePopulation.json";
 
 const RaceChart = () => {
     const [chartData, setChartData] = useState<any[]>([]);
@@ -13,18 +13,25 @@ const RaceChart = () => {
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>();
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
     const [regionColor, setRegionColor] = useState<any[]>();
-    const [parentActiveLegends, setParentActiveLegends] = useState<string[]>([]);
-
+    const [parentActiveLegends, setParentActiveLegends] = useState<string[]>(
+        []
+    );
+    const cacheData:any = cacheFile;
     useEffect(() => {
         const getData = async () => {
             const response = await fetch("/api/population/year?take=0", {
                 method: "GET",
-            });
+            })
             return response.json();
+
         };
         getData().then((data: ResponseData) => {
             setChartData(data.data);
-        });
+        }).catch((error) => {
+            alert("CAN NOT CONNECT TO DB, Using Cache file");
+            console.log(error)
+            setChartData(cacheData.data); ;
+        })
 
         // USE CACHED DATA
         // setChartData(population);
@@ -58,7 +65,7 @@ const RaceChart = () => {
     }, []);
 
     useEffect(() => {
-        console.log("LEGEND",parentActiveLegends)
+        console.log("LEGEND", parentActiveLegends);
         const addYearInterval = () => {
             const intervalID: NodeJS.Timeout = setInterval(() => {
                 setCurrentYear((prev) => {
@@ -77,7 +84,7 @@ const RaceChart = () => {
             clearInterval(intervalId);
         }
         return () => clearInterval(intervalId);
-    }, [isPlaying, chartData,parentActiveLegends]);
+    }, [isPlaying, chartData, parentActiveLegends]);
 
     const handlePlayBtn = () => {
         setIsPlaying((prevState) => {
@@ -100,15 +107,19 @@ const RaceChart = () => {
         const objIdx = data.findIndex((data) => data.year === year);
 
         if (objIdx >= 0) {
-            const chartDataList :any[]= [];
-            
-            for (let index = 0; index < data[objIdx].countries.length; index++) {
+            const chartDataList: any[] = [];
+
+            for (
+                let index = 0;
+                index < data[objIdx].countries.length;
+                index++
+            ) {
                 const country = data[objIdx].countries[index];
                 country.color = mapRegionTypeColor(country.region);
-                if(chartDataList.length > 10){
+                if (chartDataList.length > 10) {
                     break;
                 }
-                if(parentActiveLegends.includes(country.region)){
+                if (parentActiveLegends.includes(country.region)) {
                     chartDataList.push(country);
                 }
             }
@@ -132,23 +143,29 @@ const RaceChart = () => {
     const handleActiveLegendsChange = (activeLegends: string[]) => {
         // Do something with the updated activeLegends in the parent component
         setParentActiveLegends(activeLegends);
-      };
+    };
 
     return (
         <>
             <div
                 style={{textAlign: "center"}}
                 className="w-full h-full text-center"
-            >   <h1 className="font-bold text-3xl p-4">World Population Ranking 1950 - 2021</h1>
+            >
+                {" "}
+                <h1 className="font-bold text-3xl p-4">
+                    World Population Ranking 1950 - 2021
+                </h1>
                 <div className="w-full h-full mx-auto rounded text-center">
                     {/* <BarChart
                         datalist={formatChartDataByYear(chartData, currentYear)}
                     /> */}
-                    <LegendButton onActiveLegendsChange={handleActiveLegendsChange} />
+                    <LegendButton
+                        onActiveLegendsChange={handleActiveLegendsChange}
+                    />
                     <RacingBarChart
                         data={formatChartDataByYear(chartData, currentYear)}
                     />
-                    <div className="w-full" style={{minWidth:"800px"}}>
+                    <div className="w-full" style={{minWidth: "800px"}}>
                         <TimelineBar
                             year={currentYear}
                             onYearChange={onYearChanged}
