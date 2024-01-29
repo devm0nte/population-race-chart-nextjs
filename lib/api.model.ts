@@ -69,7 +69,7 @@ export async function findGroupByYear(
     },
     where?: Prisma.PopulationWhereInput
 ): Promise<any> {
-    const { take = 20, type = "population" } = params;
+    const { take = 10, type = "population" } = params;
     const selectObject: Record<string, boolean> = {
         id: true,
         country_name: true,
@@ -97,7 +97,7 @@ export async function findGroupByYear(
                 orderBy: {
                     [type]: 'desc',
                 },
-                take: 10,
+                take: take,
                 select: {
                     country_name: true,
                     region: true,

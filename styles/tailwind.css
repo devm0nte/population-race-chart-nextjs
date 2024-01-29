@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+.container{
+    min-width: 600px;
+    max-width: 1200px;
+}
 canvas{
     margin: 0 auto;
     }
+
+.label {
+    color: white;
+    text-align: end;
+    font-size: large;
+    text-overflow: ellipsis;
+}
+
+.bar {
+    border-radius: 10px;
+}
+
+.chart-container {
+    text-align: center;
+    text-align: -webkit-center;
+}
