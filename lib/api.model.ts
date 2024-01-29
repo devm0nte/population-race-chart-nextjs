@@ -86,7 +86,7 @@ export async function findGroupByYear(
         region: true,
         flag: true,
         year: true,
-        [type]: true, // Add other default fields
+        [type]: true,
     };
 
     const uniqueYears = await prisma.population.groupBy({
@@ -107,7 +107,7 @@ export async function findGroupByYear(
                 orderBy: {
                     [type]: 'desc',
                 },
-                take: take,
+                take: take == 0 ? undefined : take,
                 select: {
                     country_name: true,
                     region: true,

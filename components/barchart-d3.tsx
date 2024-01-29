@@ -1,7 +1,13 @@
 import React, {useRef, useEffect, useState} from "react";
-import {select, scaleBand, scaleLinear, max, axisBottom, axisTop} from "d3";
-import {getRandomColor} from "@/lib/api.utils";
-
+import {
+    select,
+    scaleBand,
+    scaleLinear,
+    max,
+    axisBottom,
+    axisTop,
+    easeLinear,
+} from "d3";
 interface RacingBarChartProps {
     data: {
         country_name: string;
@@ -27,7 +33,7 @@ export function RacingBarChart({data}: RacingBarChartProps) {
     useEffect(() => {
         const svg = select(svgRef.current);
         const wrapper = wrapperRef.current;
-
+        const duration = 750;
         if (!svg || !wrapper) return;
         svg.attr("height", height)
             .attr("viewBox", [0, 0, width, height])
@@ -45,9 +51,16 @@ export function RacingBarChart({data}: RacingBarChartProps) {
 
         const xScale = scaleLinear()
             .domain([0, max(data, (d) => d.population) || 0])
-            .range([0, width - nameWidth - 120]);
+            .range([yScale.bandwidth(), width - nameWidth - 120]);
 
-        const circleRadius = yScale.bandwidth() / 2;
+        // const g = svg
+        //     .append("g")
+        //     .attr("transform", `translate(0,${marginTop})`);
+        // const axis = axisTop(xScale).ticks(width / 160);
+        // g.transition().call(axis);
+        // g.select(".tick:first-of-type text").remove();
+        // g.selectAll(".tick:not(:first-of-type) line").attr("stroke", "white");
+        // g.select(".domain").remove();
 
         // draw the bars
         svg.selectAll(".bar")
@@ -60,9 +73,11 @@ export function RacingBarChart({data}: RacingBarChartProps) {
             .attr("fill", (d: any) => d.color + "90")
             .attr("stroke", (d: any) => d.color)
             .attr("class", "bar")
-            .attr("x", nameWidth)
+            .attr("x", nameWidth + 5)
             .attr("height", yScale.bandwidth())
             .transition("linear")
+            .duration(duration)
+            .ease(easeLinear)
             .attr("width", (d) => xScale(d.population) || 0)
             .attr("y", (d, index) => yScale(index.toString()) || 0);
 
@@ -79,9 +94,12 @@ export function RacingBarChart({data}: RacingBarChartProps) {
             )
             .text((d) => `${d.country_name}`)
             .attr("class", "label")
-            .attr("x", 20)
+            .attr("style", `width: 100%; float:right;`)
+            .attr("x", 0)
             .attr("width", nameWidth)
             .transition("linear")
+            .duration(duration)
+            .ease(easeLinear)
             .attr(
                 "y",
                 (d, index) =>
@@ -107,7 +125,8 @@ export function RacingBarChart({data}: RacingBarChartProps) {
             )
             .text((d) => `${d.population.toLocaleString()}`)
             .transition("linear")
-            .duration(500)
+            .duration(duration)
+            .ease(easeLinear)
             .attr(
                 "y",
                 (d, index) =>
@@ -129,8 +148,8 @@ export function RacingBarChart({data}: RacingBarChartProps) {
                             (yScale(index.toString()) || 0) +
                                 yScale.bandwidth() / 2 || 0
                     )
-                    .attr("cx", nameWidth + circleRadius + 5)
-                    .attr("r", circleRadius - 2)
+                    .attr("cx", nameWidth + yScale.bandwidth() / 2 + 5)
+                    .attr("r", yScale.bandwidth() / 2 - 2)
                     .attr(
                         "fill",
                         (d: any) =>
@@ -140,14 +159,15 @@ export function RacingBarChart({data}: RacingBarChartProps) {
                     )
             )
             .transition("linear")
-            .duration(500)
+            .duration(duration)
+            .ease(easeLinear)
             .attr(
                 "cy",
                 (d, index) =>
                     (yScale(index.toString()) || 0) + yScale.bandwidth() / 2 ||
                     0
             )
-            .attr("cx", nameWidth + circleRadius + 5);
+            .attr("cx", nameWidth + yScale.bandwidth() / 2 + 5);
         const defs = svg.append("defs");
         data.forEach((d) => {
             defs.append("pattern")
@@ -163,7 +183,7 @@ export function RacingBarChart({data}: RacingBarChartProps) {
                 .attr("xlink:href", d.flag)
                 .attr("height", yScale.bandwidth())
                 .attr("width", yScale.bandwidth())
-                .attr("clip-path", "circle(" + circleRadius + "px)");
+                .attr("clip-path", "circle(" + yScale.bandwidth() / 2 + "px)");
         });
     }, [activeLegends, data]);
 

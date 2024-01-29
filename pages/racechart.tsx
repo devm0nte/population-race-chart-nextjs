@@ -13,9 +13,11 @@ const RaceChart = () => {
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>();
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
     const [regionColor, setRegionColor] = useState<any[]>();
+    const [parentActiveLegends, setParentActiveLegends] = useState<string[]>([]);
+
     useEffect(() => {
         const getData = async () => {
-            const response = await fetch("/api/population/year", {
+            const response = await fetch("/api/population/year?take=0", {
                 method: "GET",
             });
             return response.json();
@@ -56,6 +58,7 @@ const RaceChart = () => {
     }, []);
 
     useEffect(() => {
+        console.log("LEGEND",parentActiveLegends)
         const addYearInterval = () => {
             const intervalID: NodeJS.Timeout = setInterval(() => {
                 setCurrentYear((prev) => {
@@ -74,7 +77,7 @@ const RaceChart = () => {
             clearInterval(intervalId);
         }
         return () => clearInterval(intervalId);
-    }, [isPlaying, chartData]);
+    }, [isPlaying, chartData,parentActiveLegends]);
 
     const handlePlayBtn = () => {
         setIsPlaying((prevState) => {
@@ -97,10 +100,24 @@ const RaceChart = () => {
         const objIdx = data.findIndex((data) => data.year === year);
 
         if (objIdx >= 0) {
-            const chartDataList = data[objIdx].countries.map((country: any) => {
+            const chartDataList :any[]= [];
+            
+            for (let index = 0; index < data[objIdx].countries.length; index++) {
+                const country = data[objIdx].countries[index];
                 country.color = mapRegionTypeColor(country.region);
-                return country;
-            });
+                if(chartDataList.length > 10){
+                    break;
+                }
+                if(parentActiveLegends.includes(country.region)){
+                    chartDataList.push(country);
+                }
+            }
+            // const chartDataList = data[objIdx].countries.filter((country: any) => {
+            //     country.color = mapRegionTypeColor(country.region);
+            //     if(parentActiveLegends.includes(country.region)){
+            //         return country;
+            //     }
+            // });
 
             return chartDataList;
         }
@@ -112,17 +129,22 @@ const RaceChart = () => {
         setCurrentYear(year);
     };
 
+    const handleActiveLegendsChange = (activeLegends: string[]) => {
+        // Do something with the updated activeLegends in the parent component
+        setParentActiveLegends(activeLegends);
+      };
+
     return (
         <>
             <div
                 style={{textAlign: "center"}}
                 className="w-full h-full text-center"
-            >
+            >   <h1 className="font-bold text-3xl p-4">World Population Ranking 1950 - 2021</h1>
                 <div className="w-full h-full mx-auto rounded text-center">
                     {/* <BarChart
                         datalist={formatChartDataByYear(chartData, currentYear)}
                     /> */}
-                    <LegendButton />
+                    <LegendButton onActiveLegendsChange={handleActiveLegendsChange} />
                     <RacingBarChart
                         data={formatChartDataByYear(chartData, currentYear)}
                     />
@@ -131,7 +153,7 @@ const RaceChart = () => {
                             year={currentYear}
                             onYearChange={onYearChanged}
                         />
-                        <div className="flex justify-center text-center m-12">
+                        <div className="flex justify-center text-center m-12 px-60">
                             <div className="flex-auto">
                                 <button
                                     className={

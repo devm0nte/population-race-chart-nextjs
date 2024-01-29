@@ -12,7 +12,7 @@ canvas{
 
 .label {
     color: white;
-    text-align: end;
+    text-align:end;
     font-size: large;
     text-overflow: ellipsis;
 }
