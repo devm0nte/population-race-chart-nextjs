@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .container{
-    min-width: 600px;
+    min-width: 800px;
     max-width: 1200px;
 }
 canvas{

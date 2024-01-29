@@ -16,7 +16,7 @@ export function RacingBarChart({data}: RacingBarChartProps) {
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const [activeLegends, setActiveLegends] = useState<string[]>([]);
 
-    const width = wrapperRef.current?.clientWidth || 1000;
+    const width = wrapperRef.current?.clientWidth || 800;
     const height = 500;
     const marginTop = 30;
     const marginRight = 40;
@@ -24,7 +24,6 @@ export function RacingBarChart({data}: RacingBarChartProps) {
     const marginLeft = 40;
     const nameWidth = 150;
 
-    // will be called initially and on every data change
     useEffect(() => {
         const svg = select(svgRef.current);
         const wrapper = wrapperRef.current;
@@ -32,11 +31,7 @@ export function RacingBarChart({data}: RacingBarChartProps) {
         if (!svg || !wrapper) return;
         svg.attr("height", height)
             .attr("viewBox", [0, 0, width, height])
-            .attr(
-                "style",
-                `width: 80%; min-width: 1000px; height: auto; `
-            );
-        // sorting the data
+            .attr("style", `width: 80%; min-width: 1000px; height: auto; `);
 
         const yScale = scaleBand()
             .paddingOuter(0.5)
@@ -45,12 +40,12 @@ export function RacingBarChart({data}: RacingBarChartProps) {
                 data.map((d, index) => {
                     return index.toString();
                 })
-            ) // [0,1,2,3,4,5]
-            .range([0, height]); // [0, 200]
+            )
+            .range([0, height]);
 
         const xScale = scaleLinear()
-            .domain([0, max(data, (d) => d.population) || 0]) // [0, 65 (example)]
-            .range([0, width - nameWidth - 120]); // [0, 400 (example)]
+            .domain([0, max(data, (d) => d.population) || 0])
+            .range([0, width - nameWidth - 120]);
 
         const circleRadius = yScale.bandwidth() / 2;
 
@@ -64,7 +59,6 @@ export function RacingBarChart({data}: RacingBarChartProps) {
             )
             .attr("fill", (d: any) => d.color + "90")
             .attr("stroke", (d: any) => d.color)
-            // .attr("style", (d: any) => `border-radius:5px; outline: medium solid ${d.color};`)
             .attr("class", "bar")
             .attr("x", nameWidth)
             .attr("height", yScale.bandwidth())
@@ -87,7 +81,6 @@ export function RacingBarChart({data}: RacingBarChartProps) {
             .attr("class", "label")
             .attr("x", 20)
             .attr("width", nameWidth)
-            // .attr("style", (d: any) => `border-radius:5px; outline: medium solid ${d.color};`)
             .transition("linear")
             .attr(
                 "y",
@@ -136,7 +129,7 @@ export function RacingBarChart({data}: RacingBarChartProps) {
                             (yScale(index.toString()) || 0) +
                                 yScale.bandwidth() / 2 || 0
                     )
-                    .attr("cx", nameWidth + circleRadius + 5) // Adjust the x-coordinate for positioning
+                    .attr("cx", nameWidth + circleRadius + 5)
                     .attr("r", circleRadius - 2)
                     .attr(
                         "fill",
@@ -167,7 +160,7 @@ export function RacingBarChart({data}: RacingBarChartProps) {
                 .attr("x", "0")
                 .attr("y", "0")
                 .append("image")
-                .attr("xlink:href", d.flag) // Assuming 'flag' is the path to your image
+                .attr("xlink:href", d.flag)
                 .attr("height", yScale.bandwidth())
                 .attr("width", yScale.bandwidth())
                 .attr("clip-path", "circle(" + circleRadius + "px)");
@@ -175,7 +168,8 @@ export function RacingBarChart({data}: RacingBarChartProps) {
     }, [activeLegends, data]);
 
     return (
-        <div className="chart-container mx-10"
+        <div
+            className="chart-container mx-10"
             ref={wrapperRef}
             style={{marginBottom: "2rem", width: "100%", height: "100%"}}
         >

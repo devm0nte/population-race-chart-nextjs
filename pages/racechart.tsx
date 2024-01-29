@@ -1,5 +1,6 @@
 import {BarChart} from "@/components/barchart";
 import {RacingBarChart} from "@/components/barchart-d3";
+import LegendButton from "@/components/legendButton";
 import {TimelineBar} from "@/components/timelinebar";
 import {population} from "@/data/population";
 import {regionType} from "@/data/type";
@@ -44,7 +45,7 @@ const RaceChart = () => {
                         color = "#94346E";
                         break;
                     case "Americas":
-                        color = "#94346E";
+                        color = "#38A6A5";
                         break;
                     default:
                         break;
@@ -121,6 +122,7 @@ const RaceChart = () => {
                     {/* <BarChart
                         datalist={formatChartDataByYear(chartData, currentYear)}
                     /> */}
+                    <LegendButton />
                     <RacingBarChart
                         data={formatChartDataByYear(chartData, currentYear)}
                     />

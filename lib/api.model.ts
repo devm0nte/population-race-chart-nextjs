@@ -12,23 +12,33 @@ export async function findAll(params: {
 }, where?: Prisma.PopulationWhereInput): Promise<any[]> {
     const { skip, take = 20, cursor, type = "population", year } = params;
 
-    return prisma.population.findMany({
-        skip,
-        take,
-        cursor,
-        where,
-        orderBy: {
-            [type]: "desc"
-        },
-        select: {
-            id: true,
-            country_name: true,
-            region: true,
-            flag: true,
-            year: true,
-            [type]: true,
-        }
-    });
+    try {
+        return prisma.population.findMany({
+            skip,
+            take,
+            cursor,
+            where,
+            orderBy: {
+                [type]: "desc"
+            },
+            select: {
+                id: true,
+                country_name: true,
+                region: true,
+                flag: true,
+                year: true,
+                [type]: true,
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return [];
+    } finally {
+        prisma.$disconnect();
+
+    }
+
+
 };
 
 export async function findAllByYear(params: {
@@ -44,7 +54,7 @@ export async function findAllByYear(params: {
         skip,
         take,
         cursor,
-        where:{
+        where: {
             year: year,
             ...where
         },
