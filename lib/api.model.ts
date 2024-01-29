@@ -10,7 +10,7 @@ export async function findAll(params: {
     type?: filterTypeEnum;
     year?: number;
 }, where?: Prisma.PopulationWhereInput): Promise<any[]> {
-    const { skip, take = 20, cursor, type = "population", year } = params;
+    const { skip, take = 10, cursor, type = "population", year } = params;
 
     try {
         return prisma.population.findMany({
@@ -47,7 +47,7 @@ export async function findAllByYear(params: {
     type?: filterTypeEnum;
     year?: number;
 }, where?: Prisma.PopulationWhereInput): Promise<any[]> {
-    const { skip, take = 20, cursor, type = "population", year } = params;
+    const { skip, take = 10, cursor, type = "population", year } = params;
     try {
         return prisma.population.findMany({
             skip,
