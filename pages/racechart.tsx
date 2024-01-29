@@ -6,6 +6,7 @@ import {regionType} from "@/data/type";
 import {ResponseData, getRandomColor} from "@/lib/api.utils";
 import React, {useEffect, useState} from "react";
 import cacheFile from "@/data/cachePopulation.json";
+import {HashLoader} from "react-spinners";
 
 const RaceChart = () => {
     const [chartData, setChartData] = useState<any[]>([]);
@@ -13,24 +14,31 @@ const RaceChart = () => {
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>();
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
     const [regionColor, setRegionColor] = useState<any[]>();
+    const [loading, setLoading] = useState<boolean>(false);
     const [parentActiveLegends, setParentActiveLegends] = useState<string[]>(
         []
     );
-    const cacheData:any = cacheFile;
+    const cacheData: any = cacheFile;
+
+    useEffect(() => {
+        setLoading(chartData.length <= 0);
+    }, [chartData]);
+
     useEffect(() => {
         const getData = async () => {
             const response = await fetch("/api/population/year?take=0", {
                 method: "GET",
-            })
+            });
             return response.json();
-
         };
-        getData().then((data: ResponseData) => {
-            setChartData(data.data);
-        }).catch((error) => {
-            alert("CAN NOT CONNECT TO DB, Using Cache file");
-            setChartData(cacheData.data); ;
-        })
+        getData()
+            .then((data: ResponseData) => {
+                setChartData(data.data);
+            })
+            .catch((error) => {
+                alert("CAN NOT CONNECT TO DB, Using Cache file");
+                setChartData(cacheData.data);
+            });
 
         // USE CACHED DATA
         // setChartData(population);
@@ -148,52 +156,70 @@ const RaceChart = () => {
                 style={{textAlign: "center"}}
                 className="w-full h-full text-center"
             >
-                {" "}
-                <h1 className="font-bold text-3xl p-4">
-                    World Population Ranking 1950 - 2021
-                </h1>
-                <div className="w-full h-full mx-auto rounded text-center">
-                    {/* <BarChart
+                {loading ? (
+                    <div className="absolute top-1/2 left-1/2">
+                        <HashLoader
+                            size={100}
+                            loading={loading}
+                            className="spinner-container"
+                            color="#36d7b7"
+                        />
+                    </div>
+                ) : (
+                    <>
+                        <h1 className="font-bold text-3xl p-4">
+                            World Population Ranking 1950 - 2021
+                        </h1>
+
+                        <div className="w-full h-full mx-auto rounded text-center">
+                            {/* <BarChart
                         datalist={formatChartDataByYear(chartData, currentYear)}
                     /> */}
-                    <LegendButton
-                        onActiveLegendsChange={handleActiveLegendsChange}
-                    />
-                    <RacingBarChart
-                        data={formatChartDataByYear(chartData, currentYear)}
-                    />
-                    <div className="w-full" style={{minWidth: "800px"}}>
-                        <TimelineBar
-                            year={currentYear}
-                            onYearChange={onYearChanged}
-                        />
-                        <div className="flex justify-center text-center m-12 px-60">
-                            <div className="flex-auto">
-                                <button
-                                    className={
-                                        isPlaying
-                                            ? "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                            : currentYear >= 2021
-                                            ? "bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
-                                            : "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                                    }
-                                    onClick={handlePlayBtn}
-                                >
-                                    {isPlaying
-                                        ? "PLAYING"
-                                        : currentYear >= 2021
-                                        ? "REPLAY"
-                                        : "PAUSED"}
-                                </button>
-                            </div>
-                            <div className="flex-auto">
-                                <h1 className="text-5xl font-black">
-                                    {currentYear}
-                                </h1>
+                            <LegendButton
+                                onActiveLegendsChange={
+                                    handleActiveLegendsChange
+                                }
+                            />
+                            <RacingBarChart
+                                data={formatChartDataByYear(
+                                    chartData,
+                                    currentYear
+                                )}
+                            />
+                            <div className="w-full" style={{minWidth: "800px"}}>
+                                <TimelineBar
+                                    year={currentYear}
+                                    onYearChange={onYearChanged}
+                                />
+                                <div className="flex justify-center text-center m-12 px-60">
+                                    <div className="flex-auto">
+                                        <button
+                                            className={
+                                                isPlaying
+                                                    ? "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                                    : currentYear >= 2021
+                                                    ? "bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
+                                                    : "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                                            }
+                                            onClick={handlePlayBtn}
+                                        >
+                                            {isPlaying
+                                                ? "PLAYING"
+                                                : currentYear >= 2021
+                                                ? "REPLAY"
+                                                : "PAUSED"}
+                                        </button>
+                                    </div>
+                                    <div className="flex-auto">
+                                        <h1 className="text-5xl font-black">
+                                            {currentYear}
+                                        </h1>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </>
+                )}
             </div>
         </>
     );
