@@ -39,8 +39,6 @@ const RaceChart = () => {
                 setChartData(cacheData.data);
             });
 
-        // USE CACHED DATA
-        // setChartData(population);
     }, []);
     useEffect(() => {
         setRegionColor(
@@ -127,25 +125,16 @@ const RaceChart = () => {
                     chartDataList.push(country);
                 }
             }
-            // const chartDataList = data[objIdx].countries.filter((country: any) => {
-            //     country.color = mapRegionTypeColor(country.region);
-            //     if(parentActiveLegends.includes(country.region)){
-            //         return country;
-            //     }
-            // });
-
             return chartDataList;
         }
         return [];
     };
 
     const onYearChanged = (year: number) => {
-        // setIsPlaying(false);
         setCurrentYear(year);
     };
 
     const handleActiveLegendsChange = (activeLegends: string[]) => {
-        // Do something with the updated activeLegends in the parent component
         setParentActiveLegends(activeLegends);
     };
 

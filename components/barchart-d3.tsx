@@ -53,14 +53,6 @@ export function RacingBarChart({data}: RacingBarChartProps) {
             .domain([0, max(data, (d) => d.population) || 0])
             .range([yScale.bandwidth(), width - nameWidth - 120]);
 
-        // const g = svg
-        //     .append("g")
-        //     .attr("transform", `translate(0,${marginTop})`);
-        // const axis = axisTop(xScale).ticks(width / 160);
-        // g.transition().call(axis);
-        // g.select(".tick:first-of-type text").remove();
-        // g.selectAll(".tick:not(:first-of-type) line").attr("stroke", "white");
-        // g.select(".domain").remove();
 
         // draw the bars
         svg.selectAll(".bar")

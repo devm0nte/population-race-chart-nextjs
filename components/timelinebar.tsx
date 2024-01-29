@@ -17,7 +17,7 @@ export const TimelineBar: React.FC<TimelineBarProps> = ({
     useEffect(() => {
         const updateProgress = (currentYear: number) => {
             const yearsPassed = currentYear - startYear;
-            const totalYears = endYear - startYear; // Include the end year
+            const totalYears = endYear - startYear; 
             const percentage = (yearsPassed / totalYears) * 100;
 
             setProgress(percentage);
@@ -27,7 +27,7 @@ export const TimelineBar: React.FC<TimelineBarProps> = ({
     }, [year]);
 
     const handleChangeYearBar= (event: React.MouseEvent<HTMLDivElement>) => {
-        // setDragging(true);
+
         const barWidth = event.currentTarget.clientWidth;
         const clickX =
             event.clientX -
