@@ -29,7 +29,6 @@ const RaceChart = () => {
             setChartData(data.data);
         }).catch((error) => {
             alert("CAN NOT CONNECT TO DB, Using Cache file");
-            console.log(error)
             setChartData(cacheData.data); ;
         })
 
@@ -65,7 +64,6 @@ const RaceChart = () => {
     }, []);
 
     useEffect(() => {
-        console.log("LEGEND", parentActiveLegends);
         const addYearInterval = () => {
             const intervalID: NodeJS.Timeout = setInterval(() => {
                 setCurrentYear((prev) => {
@@ -78,7 +76,6 @@ const RaceChart = () => {
             setIntervalId(intervalID);
         };
         if (isPlaying && chartData.length > 0) {
-            console.log(currentYear);
             addYearInterval();
         } else {
             clearInterval(intervalId);
