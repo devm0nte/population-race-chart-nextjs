@@ -21,11 +21,8 @@ const RaceChart = () => {
     const cacheData: any = cacheFile;
 
     useEffect(() => {
-        setLoading(chartData.length <= 0);
-    }, [chartData]);
-
-    useEffect(() => {
         const getData = async () => {
+            setLoading(true);
             const response = await fetch("/api/population/year?take=0", {
                 method: "GET",
             });
@@ -33,9 +30,11 @@ const RaceChart = () => {
         };
         getData()
             .then((data: ResponseData) => {
+                setLoading(false);
                 setChartData(data.data);
             })
             .catch((error) => {
+                setLoading(false);
                 alert("CAN NOT CONNECT TO DB, Using Cache file");
                 setChartData(cacheData.data);
             });
@@ -89,7 +88,7 @@ const RaceChart = () => {
             clearInterval(intervalId);
         }
         return () => clearInterval(intervalId);
-    }, [isPlaying, chartData, parentActiveLegends]);
+    }, [isPlaying, chartData]);
 
     const handlePlayBtn = () => {
         setIsPlaying((prevState) => {
