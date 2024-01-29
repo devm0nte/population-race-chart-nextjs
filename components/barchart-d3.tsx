@@ -33,7 +33,7 @@ export function RacingBarChart({data}: RacingBarChartProps) {
     useEffect(() => {
         const svg = select(svgRef.current);
         const wrapper = wrapperRef.current;
-        const duration = 750;
+        const duration = 500;
         if (!svg || !wrapper) return;
         svg.attr("height", height)
             .attr("viewBox", [0, 0, width, height])
@@ -127,6 +127,7 @@ export function RacingBarChart({data}: RacingBarChartProps) {
             .transition("linear")
             .duration(duration)
             .ease(easeLinear)
+            .attr("x", (d) => nameWidth + xScale(d.population) + 10)
             .attr(
                 "y",
                 (d, index) =>
@@ -134,7 +135,6 @@ export function RacingBarChart({data}: RacingBarChartProps) {
                         yScale.bandwidth() / 2 +
                         5 || 0
             )
-            .attr("x", (d) => nameWidth + xScale(d.population) + 10);
 
         svg.selectAll(".circle-icon")
             .data(data, (d: any, index) => d.country_name)

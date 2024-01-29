@@ -30,9 +30,9 @@ export async function findAll(params: {
                 [type]: true,
             }
         })
-    } catch (error) {
+    } catch (error:any) {
         console.log(error);
-        return [];
+        throw new Error(error.message);
     } finally {
         prisma.$disconnect();
     }
@@ -69,9 +69,9 @@ export async function findAllByYear(params: {
                 [type]: true,
             }
         });
-    } catch (error) {
+    } catch (error:any) {
         console.log(error);
-        return [];
+        throw new Error(error.message);
     } finally {
         prisma.$disconnect();
     }
@@ -129,9 +129,9 @@ export async function findGroupByYear(
                 };
             })
         );
-    } catch (error) {
+    } catch (error:any) {
         console.log(error);
-        return [];
+        throw new Error(error.message);
     } finally {
         prisma.$disconnect();
     }
